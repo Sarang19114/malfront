@@ -75,8 +75,7 @@ export default function MalexePage() {
             </Link>
             <Button
               asChild
-              variant="outline"
-              className="border-white/25 hover:border-black hover:bg-white text-black transition-all duration-300"
+              className="border-white/25 bg hover:border-black bg-white text-black transition-all duration-300"
             >
               <Link href={"/upload"}>Get Started</Link>
             </Button>
@@ -113,7 +112,7 @@ export default function MalexePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="h-14 px-8 text-lg border-white/25 hover:border-black hover:bg-white text-black transition-all duration-300 group"
+                className="h-14 px-8 text-lg border-white/25 hover:border-black bg-white text-black transition-all duration-300 group"
               >
                 <Link href={"/upload"}>Start Analyzing</Link>
                 <ArrowUpRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
@@ -423,7 +422,7 @@ export default function MalexePage() {
             <Button
               size="lg"
               variant="outline"
-              className="h-14 px-8 text-lg border-white/25 hover:border-black hover:bg-white text-black transition-all duration-300 group"
+              className="h-14 px-8 text-lg border-white/25 hover:border-black bg-white text-black transition-all duration-300 group"
             >
               Get Started Now
               <ArrowUpRight className="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />

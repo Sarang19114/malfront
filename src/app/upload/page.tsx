@@ -11,6 +11,7 @@ import { Spotlight } from "@/components/ui/spotlight-new";
 
 const Hero = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [responseData, setResponseData] = useState<{ report: string; extracted: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [codeResponseLoading, setCodeResponseLoading] = useState(false);
@@ -24,11 +25,17 @@ const Hero = () => {
     if (files.length > 0) {
       setSelectedFile(files[0]);
   
-      // Reset states when a new file is selected
+      // Reset UI states
       setDecompilationSuccess(false);
       setVirusTotalSuccess(false);
       setCapaSuccess(false);
-      setResponseData(null);
+      setMalpredSuccess(false);
+  
+      // Clear previous results from localStorage
+      localStorage.removeItem("code_response");
+      localStorage.removeItem("virus_total");
+      localStorage.removeItem("capa_response");
+      localStorage.removeItem("malpred_response");
     }
   };
   
@@ -39,58 +46,44 @@ const Hero = () => {
     }
   
     setLoading(true);
-    setCodeResponseLoading(true);
-    setVirusTotalLoading(true);
-    setCapaLoading(true);
-    setDecompilationSuccess(false);
-    setVirusTotalSuccess(false);
-    setCapaSuccess(false);
+    const fileBuffer = await selectedFile.arrayBuffer();
   
-    const formData = new FormData();
-    formData.append("file", selectedFile);
+    const sendFileForAnalysis = async (
+      endpoint: string,
+      setLoading: (val: boolean) => void,
+      setSuccess: (val: boolean) => void,
+      storageKey: string,
+      errorMsg: string
+    ) => {
+      setLoading(true);
+      try {
+        const formData = new FormData();
+        formData.append("file", new File([fileBuffer], selectedFile.name, { type: selectedFile.type }));
   
-    try {
-      // Perform all API requests in parallel
-      const [decompilationRes, virusTotalRes, capaRes] = await Promise.all([
-        fetch("/api/codeDecompilation", { method: "POST", body: formData, cache: "no-store" }),
-        fetch("/api/virusTotal", { method: "POST", body: formData, cache: "no-store" }),
-        fetch("/api/capa", { method: "POST", body: formData, cache: "no-store" }),
-      ]);
+        const response = await fetch(endpoint, { method: "POST", body: formData });
+        if (!response.ok) throw new Error(errorMsg);
   
-      // Check if any request failed
-      if (!decompilationRes.ok || !virusTotalRes.ok || !capaRes.ok) {
-        throw new Error("Processing failed!");
+        const data = await response.json();
+        localStorage.setItem(storageKey, JSON.stringify(data)); // Store in localStorage
+        setSuccess(true);
+      } catch (error) {
+        console.error(errorMsg, error);
+        alert(errorMsg);
+      } finally {
+        setLoading(false);
       }
+    };
   
-      // Parse responses
-      const [decompilationData, virusTotalData, capaData] = await Promise.all([
-        decompilationRes.json(),
-        virusTotalRes.json(),
-        capaRes.json(),
-      ]);
+    await sendFileForAnalysis("/api/codeDecompilation", setCodeResponseLoading, setDecompilationSuccess, "code_response", "Code decompilation failed!");
+    await sendFileForAnalysis("/api/virusTotal", setVirusTotalLoading, setVirusTotalSuccess, "virus_total", "Static analysis failed!");
+    await sendFileForAnalysis("/api/capa", setCapaLoading, setCapaSuccess, "capa_response", "CAPA analysis failed!");
+    await sendFileForAnalysis("/api/malpred", setMalpredLoading, setMalpredSuccess, "malpred_response", "Malware detection failed!");
   
-      // Store responses in localStorage
-      localStorage.setItem("code_response", JSON.stringify(decompilationData));
-      localStorage.setItem("virus_total", JSON.stringify(virusTotalData));
-      localStorage.setItem("capa_response", JSON.stringify(capaData));
-  
-      // Update states after successful storage
-      setResponseData(decompilationData);
-      setDecompilationSuccess(true);
-      setVirusTotalSuccess(true);
-      setCapaSuccess(true);
-  
-      console.log("Stored in localStorage:", { decompilationData, virusTotalData, capaData });
-    } catch (error) {
-      console.error("Error uploading file:", error);
-      alert("Something went wrong!");
-    } finally {
-      setLoading(false);
-      setCodeResponseLoading(false);
-      setVirusTotalLoading(false);
-      setCapaLoading(false);
-    }
+    setLoading(false);
   };
+  
+  
+  
   
 
   return (

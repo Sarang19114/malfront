@@ -5,13 +5,15 @@ import { MalwareAnalysisHeader } from "@/components/MalwareAnalysisHeader";
 import { ScanResultsTable } from "@/components/ScanResultsTable";
 import { StatsSummary } from "@/components/StatsSummary";
 import { Shield, AlertTriangle } from "lucide-react";
+import { Spotlight } from "@/components/ui/spotlight-new";
+import React from "react";
 
 export default function Home() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedData = localStorage.getItem("malpred_response");
+    const storedData = localStorage.getItem("virus_total");
     console.log(storedData);
     if (storedData) {
       setData(JSON.parse(storedData));
@@ -55,15 +57,26 @@ export default function Home() {
   );
 
   return (
-    <main className="container mx-auto py-8 px-4">
+    <main className="container mx-auto py-8 px-4 pt-24">
+              <div className="absolute inset-0 w-full h-full z-10 overflow-hidden">
+        <Spotlight />
+      </div>
       <div className="flex items-center justify-center gap-2 mb-8">
         <Shield className="h-8 w-8 text-primary" />
         <h1 className="text-3xl font-bold text-center">Malware Insight</h1>
       </div>
 
-      <div>
-        {data.map((data, val))}
+      <MalwareAnalysisHeader
+        fileInfo={data.meta.file_info}
+        date={data.data.attributes.date}
+        stats={data.data.attributes.stats}
+      />
+
+      <div className="grid grid-cols-1 gap-6 mb-6">
+        <StatsSummary stats={data.data.attributes.stats} />
       </div>
+
+      <ScanResultsTable results={scanResults} />
 
       <footer className="mt-12 text-center text-sm text-muted-foreground">
         <p className="mt-1">SHA256: {data.meta.file_info.sha256}</p>
