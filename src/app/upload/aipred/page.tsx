@@ -1,10 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { MalwareAnalysisHeader } from "@/components/MalwareAnalysisHeader";
-import { ScanResultsTable } from "@/components/ScanResultsTable";
-import { StatsSummary } from "@/components/StatsSummary";
 import { Shield, AlertTriangle } from "lucide-react";
+import { Spotlight } from "@/components/ui/spotlight-new";
+import React from "react";
 
 export default function Home() {
   const [data, setData] = useState<any>(null);
@@ -12,20 +11,18 @@ export default function Home() {
 
   useEffect(() => {
     const storedData = localStorage.getItem("malpred_response");
-    console.log(storedData);
     if (storedData) {
       setData(JSON.parse(storedData));
     }
+    setLoading(false);
   }, []);
 
-  if (!loading) {
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full"></div>
-          <p className="text-lg font-medium">
-            Loading malware analysis data...
-          </p>
+          <p className="text-lg font-medium">Loading malware analysis data...</p>
         </div>
       </div>
     );
@@ -45,28 +42,50 @@ export default function Home() {
     );
   }
 
-  // Transform the results object into an array of objects with name, category, and result
-  const scanResults = Object.entries(data.data.attributes.results).map(
-    ([name, details]: [string, any]) => ({
-      name,
-      category: details.category,
-      result: details.result,
-    })
-  );
+  const { prediction, features } = data;
+  const featureEntries = Object.entries(features);
 
   return (
-    <main className="container mx-auto py-8 px-4">
-      <div className="flex items-center justify-center gap-2 mb-8">
-        <Shield className="h-8 w-8 text-primary" />
-        <h1 className="text-3xl font-bold text-center">Malware Insight</h1>
+    <main className="container bg-card mx-auto py-8 pt-24">
+      <div className="absolute inset-0 w-full h-full z-10 overflow-hidden">
+        <Spotlight />
       </div>
+      <header className="text-center mb-8">
+        <Shield className="inline h-8 w-8 text-primary mr-2" />
+        <h1 className="text-3xl font-bold">Prediction: {prediction}</h1>
+      </header>
 
-      <div>
-        {data.map((data, val))}
-      </div>
+      <section>
+        <h2 className="text-2xl font-semibold mb-4">Features</h2>
+        <table className="min-w-full border-collapse border border-gray-300">
+          <thead>
+            <tr>
+              <th className="border text-black px-4 py-2 bg-gray-100">Feature</th>
+              <th className="border text-black px-4 py-2 bg-gray-100">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {featureEntries.map(([key, value]) => (
+              <tr key={key}>
+                <td className="border px-4 py-2">
+                  <a
+                    href={`https://www.google.com/search?q=what+is+${encodeURIComponent(key)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {key}
+                  </a>
+                </td>
+                <td className="border px-4 py-2">{String(value)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
 
       <footer className="mt-12 text-center text-sm text-muted-foreground">
-        <p className="mt-1">SHA256: {data.meta.file_info.sha256}</p>
+        <p>Analysis provided by MalwareInsight.</p>
       </footer>
     </main>
   );

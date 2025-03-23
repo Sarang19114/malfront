@@ -2,7 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import Editor, { OnMount } from "@monaco-editor/react";
-import MarkdownIt from "markdown-it";
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const MarkdownIt = require("markdown-it");
 import * as monaco from "monaco-editor";
 interface MonacoEditorProps {
   cCode: string | undefined;

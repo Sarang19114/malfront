@@ -5,6 +5,10 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["images.unsplash.com"],
   },
+  webpack: (config) => {
+    config.resolve.alias['markdown-it'] = require.resolve('markdown-it');
+    return config;
+  },
 };
 
 export default nextConfig;

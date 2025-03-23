@@ -20,6 +20,8 @@ const Hero = () => {
   const [virusTotalSuccess, setVirusTotalSuccess] = useState(false);
   const [capaLoading, setCapaLoading] = useState(false);
   const [capaSuccess, setCapaSuccess] = useState(false);
+  const [malpredLoading, setMalpredLoading] = useState(false);
+  const [malpredSuccess, setMalpredSuccess] = useState(false);
 
   const handleFileChange = (files: File[]) => {
     if (files.length > 0) {
@@ -30,7 +32,7 @@ const Hero = () => {
       setVirusTotalSuccess(false);
       setCapaSuccess(false);
       setMalpredSuccess(false);
-  
+
       // Clear previous results from localStorage
       localStorage.removeItem("code_response");
       localStorage.removeItem("virus_total");
@@ -77,7 +79,7 @@ const Hero = () => {
     await sendFileForAnalysis("/api/codeDecompilation", setCodeResponseLoading, setDecompilationSuccess, "code_response", "Code decompilation failed!");
     await sendFileForAnalysis("/api/virusTotal", setVirusTotalLoading, setVirusTotalSuccess, "virus_total", "Static analysis failed!");
     await sendFileForAnalysis("/api/capa", setCapaLoading, setCapaSuccess, "capa_response", "CAPA analysis failed!");
-    await sendFileForAnalysis("/api/malpred", setMalpredLoading, setMalpredSuccess, "malpred_response", "Malware detection failed!");
+    await sendFileForAnalysis("/api/malpred", setMalpredLoading, setMalpredSuccess, "malpred_response", "Malware prediction failed!");
   
     setLoading(false);
   };
@@ -145,6 +147,13 @@ const Hero = () => {
             loadingText="Analyzing with CAPA...."
             successText="CAPA Analysis Completed"
             link="/upload/capa"
+          />
+          <ProcessingStatus
+            loading={malpredLoading}
+            success={malpredSuccess}
+            loadingText="Predicting Malware...."
+            successText="Malware Prediction Completed"
+            link="/upload/aipred"
           />
         </div>
       </div>

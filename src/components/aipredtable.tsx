@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Badge } from "@/components/ui/badge";
-import { Search, Filter, ArrowUpDown } from "lucide-react";
+import { Search, ArrowUpDown } from "lucide-react";
 
 interface ScanResult {
   name: string;
-  category: string;
   result: string | null;
 }
 
@@ -16,7 +14,6 @@ interface ScanResultsTableProps {
 
 export function ScanResultsTable({ results }: ScanResultsTableProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string | null>(null);
   const [sortConfig, setSortConfig] = useState<{
     key: keyof ScanResult;
     direction: "asc" | "desc";
@@ -39,9 +36,6 @@ export function ScanResultsTable({ results }: ScanResultsTableProps) {
         (result.result &&
           result.result.toLowerCase().includes(searchTerm.toLowerCase()))
     )
-    .filter(
-      (result) => categoryFilter === null || result.category === categoryFilter
-    )
     .sort((a, b) => {
       const aValue = a[sortConfig.key] || "";
       const bValue = b[sortConfig.key] || "";
@@ -53,34 +47,9 @@ export function ScanResultsTable({ results }: ScanResultsTableProps) {
       }
     });
 
-  const getCategoryBadge = (category: string) => {
-    switch (category) {
-      case "malicious":
-        return <Badge className="bg-red-500 text-white">{category}</Badge>;
-      case "suspicious":
-        return <Badge className="bg-yellow-500 text-white">{category}</Badge>;
-      case "undetected":
-        return <Badge className="bg-black text-white">{category}</Badge>;
-      case "harmless":
-        return <Badge className="bg-green-500 text-white">{category}</Badge>;
-      case "type-unsupported":
-        return <Badge className="bg-gray-500 text-white">{category}</Badge>;
-      default:
-        return <Badge className="bg-blue-500 text-white">{category}</Badge>;
-    }
-  };
-
-  const categories = [
-    "malicious",
-    "suspicious",
-    "undetected",
-    "harmless",
-    "type-unsupported",
-  ];
-
   return (
     <div className="bg-card bg-white text-black rounded-lg shadow-md p-6">
-      <h2 className="text-xl font-bold mb-4">Scan Results</h2>
+      <h2 className="text-xl font-bold mb-4">AI Prediction Results</h2>
 
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="relative flex-1">
@@ -94,26 +63,7 @@ export function ScanResultsTable({ results }: ScanResultsTableProps) {
           />
         </div>
 
-        <div className="flex items-center gap-2">
-          <Filter className="h-4 w-4 text-muted-foreground" />
-          <div className="flex flex-wrap gap-2">
-            <Badge
-              className={`cursor-pointer ${categoryFilter === null ? "bg-default" : "bg-outline"}`}
-              onClick={() => setCategoryFilter(null)}
-            >
-              All
-            </Badge>
-            {categories.map((category) => (
-              <Badge
-                key={category}
-                className={`cursor-pointer ${categoryFilter === category ? "bg-default" : "bg-outline"}`}
-                onClick={() => setCategoryFilter(category)}
-              >
-                {category}
-              </Badge>
-            ))}
-          </div>
-        </div>
+
       </div>
 
       <div className="overflow-x-auto">
@@ -131,12 +81,7 @@ export function ScanResultsTable({ results }: ScanResultsTableProps) {
               </th>
               <th
                 className="px-4 py-3 text-left text-sm font-medium text-muted-foreground cursor-pointer"
-                onClick={() => handleSort("category")}
               >
-                <div className="flex items-center gap-1">
-                  Category
-                  <ArrowUpDown className="h-4 w-4" />
-                </div>
               </th>
               <th
                 className="px-4 py-3 text-left text-sm font-medium text-muted-foreground cursor-pointer"
@@ -154,7 +99,6 @@ export function ScanResultsTable({ results }: ScanResultsTableProps) {
               <tr key={index} className="hover:bg-muted/50 transition-colors">
                 <td className="px-4 py-3 text-sm font-medium">{result.name}</td>
                 <td className="px-4 py-3 text-sm">
-                  {getCategoryBadge(result.category)}
                 </td>
                 <td className="px-4 py-3 text-sm font-mono">
                   {result.result || (

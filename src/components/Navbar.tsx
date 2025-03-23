@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Menu, X, Code } from "lucide-react";
+import { Menu, X, Code, User } from "lucide-react";
+import { UserButton } from "@clerk/nextjs";
 
 const navLinks = [
   { name: "Upload", href: "/upload", target: "" },
@@ -31,15 +32,6 @@ export default function Navbar() {
           <span className="font-bold text-xl tracking-tight">Malexe</span>
         </Link>
 
-        {/* Mobile Menu Button */}
-        <button
-          className="md:hidden text-white bg-black"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Toggle Menu"
-        >
-          {isOpen ? <X size={28} /> : <Menu size={28} />}
-        </button>
-
         {/* Desktop Menu */}
         <ul className="hidden md:flex items-center space-x-8">
           {navLinks.map((link) => (
@@ -54,6 +46,19 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+
+        {/* User Profile */}
+        <div className="flex items-center space-x-4">
+          <UserButton afterSignOutUrl="/" />
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-white bg-black"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle Menu"
+          >
+            {isOpen ? <X size={36} /> : <Menu size={36} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

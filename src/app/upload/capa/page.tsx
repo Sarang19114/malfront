@@ -52,11 +52,11 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-md relative z-20">
+        <div className="bg-white text-blu p-6 rounded-lg shadow-md relative z-20">
           <Tabs defaultValue="tree">
             <TabsList className="mb-4">
-              <TabsTrigger value="tree">Tree View</TabsTrigger>
-              <TabsTrigger value="graph">Graph View</TabsTrigger>
+              <TabsTrigger className="text-blue-600" value="tree">Tree View</TabsTrigger>
+              <TabsTrigger className="text-blue-600" value="graph">Graph View</TabsTrigger>
             </TabsList>
             <TabsContent value="tree">
               <AttackTree data={attackData} />
