@@ -237,22 +237,22 @@ export default function MonacoEditor({
 
       <div className="px-[10%] py-6">
         <div className="font-bold text-[2rem] text-center mb-6 text-gray-800 border-b border-gray-200 pb-4">
-          <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">
+          <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-500 to-indigo-400">
             Code Analysis
           </span>
         </div>
 
         {isLoading ? (
-          <div className="flex flex-col items-center justify-center py-12 bg-white rounded-xl shadow-md border border-gray-100">
+          <div className="flex flex-col items-center justify-center py-12 bg-gray-800 rounded-xl shadow-md border border-gray-100">
             <div className="w-14 h-14 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-            <p className="mt-4 text-gray-600 font-medium">
+            <p className="mt-4 text-gray-300 font-medium">
               Analyzing your code...
             </p>
           </div>
         ) : analysis ? (
           <div
             ref={analysisRef}
-            className="bg-white rounded-xl shadow-md border border-gray-100 p-6 text-black w-full z-40 transition-all duration-300"
+            className="bg-gray-800 rounded-xl shadow-md border border-gray-100 p-6 text-gray-300 w-full z-40 transition-all duration-300"
           >
             <div
               className="prose max-w-none prose-headings:text-blue-700 prose-pre:bg-gray-800 prose-pre:text-white prose-pre:shadow-md prose-pre:rounded-lg"
@@ -264,7 +264,7 @@ export default function MonacoEditor({
             ></button>
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-md border border-gray-100 p-6 text-center text-gray-500">
+          <div className="bg-gray-800 rounded-xl shadow-md border border-gray-100 p-6 text-center text-gray-500">
             <svg
               className="w-12 h-12 mx-auto text-gray-400 mb-3"
               fill="none"

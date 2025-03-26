@@ -83,23 +83,25 @@ const Hero = () => {
   
     setLoading(false);
   };
-  
-  
-  
-  
 
   return (
-    <section className="relative min-h-screen bg-black overflow-hidden inset-0 [mask-image:radial-gradient(ellipse_at_top_left,white,transparent)]">
+    <section 
+      className="relative min-h-screen bg-black overflow-hidden inset-0 "
+      style={{
+        maskImage: "radial-gradient(ellipse at top left, white 60%, transparent 100%)",
+        WebkitMaskImage: "radial-gradient(ellipse at top left, white 60%, transparent 100%)"
+      }}
+    >
       <Spotlight />
       {/* Background Grid Pattern */}
-      <div className="fixed inset-0 -z-50">
+      <div className="fixed inset-0 -z-50 ">
         <GridPattern />
       </div>
 
       {/* Hero Content */}
       <div className="z-50 max-w-screen-xl mx-auto px-4 py-28 gap-12 text-gray-600 md:px-8">
         <div className="space-y-5 max-w-4xl mx-auto text-center">
-          <h1 className="text-sm text-indigo-600 font-medium">Security Comes First.</h1>
+          {/* {<h1 className="text-xl font-bold text-indigo-400">Security Comes First.</h1>} */}
           <h2 className="text-4xl text-white font-extrabold mx-auto md:text-5xl">
           Analyze Files with Confidence Using{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] to-[#E114E5]">
@@ -117,7 +119,7 @@ const Hero = () => {
             <FileUpload onChange={handleFileChange} />
             <div className="mt-4 flex justify-center">
               <InteractiveHoverButton
-                className="bg-white text-black mb-10"
+                className="bg-white text-black mb-1"
                 onClick={handleUpload}
                 disabled={loading || !selectedFile}
               >
