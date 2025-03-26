@@ -1,16 +1,34 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MalwareAnalysisHeader } from "@/components/MalwareAnalysisHeader";
 import { ScanResultsTable } from "@/components/ScanResultsTable";
 import { StatsSummary } from "@/components/StatsSummary";
 import { Shield, AlertTriangle } from "lucide-react";
 import { Spotlight } from "@/components/ui/spotlight-new";
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 import React from "react";
 
 export default function Home() {
+  const reportRef = useRef(null);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  const donwloadPDF = async () => {
+    if (!reportRef.current) return;
+
+    const input = reportRef.current;
+    const canvas = await html2canvas(input, { scale: 2 });
+    const imgData = canvas.toDataURL("image/png");
+
+    const pdf = new jsPDF("p", "mm", "a4");
+    const imgWidth = 210;
+    const imgHeight = (canvas.height * imgWidth) / canvas.width;
+
+    pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
+    pdf.save("malware-analysis-report.pdf");
+  }
 
   useEffect(() => {
     const storedData = localStorage.getItem("virus_total");
@@ -57,8 +75,8 @@ export default function Home() {
   );
 
   return (
-    <main className="container mx-auto py-8 px-4 pt-24">
-              <div className="absolute inset-0 w-full h-full z-10 overflow-hidden">
+    <main ref={reportRef} className="container mx-auto py-8 px-4 pt-24">
+      <div className="absolute inset-0 w-full h-full z-10 overflow-hidden">
         <Spotlight />
       </div>
       <div className="flex items-center justify-center gap-2 mb-8">
@@ -81,6 +99,13 @@ export default function Home() {
       <footer className="mt-12 text-center text-sm text-muted-foreground">
         <p className="mt-1">SHA256: {data.meta.file_info.sha256}</p>
       </footer>
+
+      <button 
+        className="bg-white hover:bg-gray-300 text-black font-semibold px-4 py-2 rounded-md shadow"
+        onClick={donwloadPDF}
+        >
+        Download as PDF
+      </button>
     </main>
   );
 }

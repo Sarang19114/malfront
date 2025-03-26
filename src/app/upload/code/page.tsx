@@ -25,16 +25,16 @@ export default function Home() {
 
   return (
     <div className=" bg-black">
-            <div className="absolute inset-0 w-full h-full overflow-hidden">
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
         <Spotlight />
       </div>
 
-    <MonacoEditor
-      cCode={codeData?.decompiled_text}
-      assemblyCode={codeData?.objdump_text}
-      setAssemblyCode={setCodeData}
-      setCCode={setCodeData}
-    />
+      <MonacoEditor
+        cCode={codeData?.decompiled_text}
+        assemblyCode={codeData?.objdump_text}
+        setAssemblyCode={setCodeData}
+        setCCode={setCodeData}
+      />
     </div>
   );
 }
